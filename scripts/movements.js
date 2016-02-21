@@ -64,13 +64,13 @@ queue()
     .call(y_axis)
     .attr('transform', 'translate(-3, 0)');
   var x_axis_g = map.append('g')
-      .attr('class', 'axis')
-      .attr('id', 'x-axis-years')
+    .attr('class', 'axis')
+    .attr('id', 'x-axis-years')
 
   function show_by_years(){
     x_axis_g
       .call(x_axis)
-      .attr('transform', 'translate(0, 0)');
+      .attr('transform', 'translate('+ (grid_size/2+1) +', 0)');
 
     artist_level = map.selectAll('.artist')
       .data(artists)
@@ -155,27 +155,17 @@ queue()
 
     d3.select('#days-button')
       .on('click', function(d){
-        // d3.select('#x-axis-years')
-        //   .style('visibility', 'hidden');
         d3.selectAll('.by-years-chart')
           .style('visibility', 'hidden');
-
-        // d3.select('#x-axis-days')
-        //   .style('visibility', 'visible');
         d3.selectAll('.by-days-chart')
           .style('visibility', 'visible');
         show_by_days();
     });
-
+      
     d3.select('#years-button')
       .on('click', function(d){
-        // d3.select('#x-axis-days')
-        //   .style('visibility', 'hidden');
         d3.selectAll('.by-days-chart')
           .style('visibility', 'hidden');
-
-        // d3.select('#x-axis-years')
-        //   .style('visibility', 'visible');
         d3.selectAll('.by-years-chart')
           .style('visibility', 'visible');
         show_by_years();

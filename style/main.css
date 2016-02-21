@@ -27,8 +27,12 @@ h2 {
 .chart {
   margin: auto;
   text-align: center;
-  max-width: 1200px;
   margin-bottom: 20px;
+}
+@media screen and (max-width: 1280px) {
+  .container {
+    max-width: 1000px;
+  }
 }
 .go-home {
   text-decoration: none;

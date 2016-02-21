@@ -64,13 +64,13 @@ queue()
     .call(y_axis)
     .attr('transform', 'translate(-3, 0)');
   var x_axis_g = map.append('g')
-      .attr('class', 'axis')
-      .attr('id', 'x-axis-years')
+    .attr('class', 'axis')
+    .attr('id', 'x-axis-years')
 
   function show_by_years(){
     x_axis_g
       .call(x_axis)
-      .attr('transform', 'translate(0, 0)');
+      .attr('transform', 'translate('+ (grid_size/2+1) +', 0)');
 
     artist_level = map.selectAll('.artist')
       .data(artists)
@@ -220,7 +220,7 @@ queue()
   map2.append('g')
     .attr('class', 'axis')
     .call(x_axis)
-    .attr('transform', 'translate(0, 0)');
+    .attr('transform', 'translate('+ (grid_size/2+1) +', 0)');
 
   artist_level = map2.selectAll('.artist')
     .data(artists)

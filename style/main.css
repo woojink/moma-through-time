@@ -1,0 +1,54 @@
+body {
+  font-family: "Helvetica Neue";
+  text-align: center;
+}
+h1 {
+  text-align: left;
+  font-size: 4.5em;
+  margin-bottom: 15px;
+  line-height: 75%;
+  letter-spacing: -2.5px;
+}
+h2 {
+  text-align: left;
+  font-size: 1.7em;
+  margin: 0px auto 10px auto;
+}
+
+.button {
+  text-decoration: underline;
+  color: black;
+}
+.container {
+  text-align: center;
+  max-width: 1200px;
+  margin: auto;
+}
+.chart {
+  margin: auto;
+  text-align: center;
+  max-width: 1200px;
+  margin-bottom: 20px;
+}
+.go-home {
+  text-decoration: none;
+  color: black;
+}
+
+/* d3 Things */
+div.tooltip {
+  position: absolute;
+  visibility: hidden;
+  font-size: 75%;
+  color: #333333;
+  background-color: #e6e6e6;
+  opacity: .95;
+  padding: 5px;
+}
+.axis text {
+  font-size: 80%;
+}
+.axis path, line {
+  fill: none;
+  shape-rendering: crispEdges;
+}

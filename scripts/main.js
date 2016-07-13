@@ -27,7 +27,10 @@ var map = svg.append("g")
 queue()
 .defer(d3.csv, "data/top_artists.csv")
 .defer(d3.csv, "data/top_artist_list.csv")
-.await(function(error, data, artist_list) {
+.defer(d3.csv, "data/top_artist_list_full.csv")
+.await(function(error, data, artist_list, artist_list_full) {
+  console.log(artist_list_full)
+
   artist_list.forEach(function(d,i){
     artist_list[i] = d.x;
   })
@@ -37,7 +40,7 @@ queue()
     .entries(data);
 
   artists.forEach(function(d){
-    d['LifetimeExhibitionLength'] = d.values[0]['LifetimeExhibitionLength'];
+    d['ExhibitionLength'] = d.values[0]['LifetimeExhibitionLength'];
   })
 
   var max_count = d3.max(data, function(d){ return +d.count; }),
@@ -64,13 +67,53 @@ queue()
     .call(y_axis)
     .attr('transform', 'translate(-3, 0)');
   var x_axis_g = map.append('g')
-    .attr('class', 'axis')
-    .attr('id', 'x-axis-years')
+      .attr('class', 'axis')
+      .attr('id', 'x-axis-years')
+
+  var square_mult = 0.7,
+      timeline_mult = 1.2;
 
   function show_by_years(){
     x_axis_g
       .call(x_axis)
-      .attr('transform', 'translate('+ (grid_size/2+1) +', 0)');
+      .attr('transform', 'translate(0, 0)');
+
+    // Draw the lifetime rectangles in the background
+    artist_lifetimes = map.selectAll('rect')
+      .data(artist_list_full)
+      .enter()
+      .append('rect')
+      .attr('id', function(d){
+        return 'lifetime-' + d['DisplayName'].replace(/ /g,'-');
+      })
+      .attr('x', function(d){
+        if (+d['YearBirth'] < 1929) {
+          return x_scale(1929);
+        }
+        else {
+          return x_scale(+d['YearBirth']);
+        }
+      })
+      .attr('y', function(d){
+        return y_scale(d['DisplayName'])- (grid_size*(timeline_mult-square_mult)/2)
+      })
+      .attr('width', function(d){
+        if (d['YearDeath'] && d['YearBirth']) {
+          if (+d['YearBirth'] < 1929) {
+            var width = x_scale(+d['YearDeath']) - x_scale(1929) }
+          else {
+            var width = x_scale(+d['YearDeath']) - x_scale(+d['YearBirth']); }
+          width = width - grid_size*(1-square_mult)/2;
+          return width;
+        }
+        else {
+          return 0;
+        }
+      })
+      .attr('height', grid_size*timeline_mult)
+      .style('fill', '#bdbdbd')
+      .style('opacity', 0.3)
+      .style('visibility','hidden')
 
     artist_level = map.selectAll('.artist')
       .data(artists)
@@ -81,8 +124,8 @@ queue()
       .enter()
       .append('rect')
       .attr('class', 'by-years-chart')
-      .attr('width', grid_size*.7)
-      .attr('height', grid_size*.7)
+      .attr('width', grid_size*square_mult)
+      .attr('height', grid_size*square_mult)
       .attr('x', function(d){
         return x_scale(d.StartYear);
       })
@@ -93,6 +136,11 @@ queue()
         return color_scale(d.count)
       })
       .on('mouseover', function(d){
+        console.log(d['DisplayName'])
+        d3.select('#lifetime-' + d['DisplayName'].replace(/ /g,'-'))
+          .transition()
+          .style('visibility','visible')
+
         d3.select('#tt1')
           .style('visibility','visible')
           .style('top', d3.event.pageY+10 + 'px')
@@ -106,6 +154,10 @@ queue()
           .transition().style('opacity', .9);
       })
       .on('mouseout', function(d){
+        d3.select('#lifetime-' + d['DisplayName'].replace(/ /g,'-'))
+          .transition()
+          .style('visibility','hidden');
+
         d3.select('#tt1')
           .style('visibility','hidden')
           .transition().style('opacity', 0);
@@ -122,7 +174,7 @@ queue()
       .append('rect')
       .attr('class', 'by-days-chart')
       .attr('width', function(d){
-        return x_scale_days(d.LifetimeExhibitionLength);
+        return x_scale_days(d.ExhibitionLength);
       })
       .attr('height', grid_size*.7)
       .attr('x', function(d){
@@ -132,14 +184,14 @@ queue()
         return y_scale(d.key)
       })
       .style('fill', function(d){
-        return color_scale_days(d.LifetimeExhibitionLength)
+        return color_scale_days(d.ExhibitionLength)
       })
       .on('mouseover', function(d){
         d3.select('#tt1')
           .style('visibility','visible')
           .style('top', d3.event.pageY+10 + 'px')
           .style('left', d3.event.pageX+10 + 'px')
-          .html('<strong>'+d.key+'</strong><br>'+d.LifetimeExhibitionLength+' days of exhibitions')
+          .html('<strong>'+d.key+'</strong><br>'+d.ExhibitionLength+' days of exhibitions')
           .transition().style('opacity', .9);
       })
       .on('mouseout', function(d){
@@ -220,7 +272,7 @@ queue()
   map2.append('g')
     .attr('class', 'axis')
     .call(x_axis)
-    .attr('transform', 'translate('+ (grid_size/2+1) +', 0)');
+    .attr('transform', 'translate(0, 0)');
 
   artist_level = map2.selectAll('.artist')
     .data(artists)

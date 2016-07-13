@@ -1,5 +1,5 @@
 body {
-  font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  font-family: "Helvetica Neue";
   text-align: center;
 }
 h1 {
@@ -15,6 +15,11 @@ h2 {
   margin: 0px auto 10px auto;
 }
 
+a {
+  color: #525252;
+  text-decoration-style: dotted;
+}
+
 .button {
   text-decoration: underline;
   color: black;
@@ -23,16 +28,18 @@ h2 {
   text-align: center;
   max-width: 1200px;
   margin: auto;
+  padding: 0 20px 0 20px;
 }
 .chart {
   margin: auto;
   text-align: center;
+  max-width: 1200px;
   margin-bottom: 20px;
 }
-@media screen and (max-width: 1280px) {
-  .container {
-    max-width: 1000px;
-  }
+.description {
+  text-align:left;
+  font-size: 1.1em;
+  color: #525252;
 }
 .go-home {
   text-decoration: none;

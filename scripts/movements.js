@@ -8,7 +8,7 @@ var margin = {
 
 // Set dimensions
 var svg_width=1500,
-  svg_height=600,
+  svg_height=1800,
   width = svg_width - (margin.left + margin.right),
   height = svg_height - (margin.top + margin.bottom);
 
@@ -26,15 +26,16 @@ var map = svg.append("g")
 
 queue()
 .defer(d3.csv, "data/artists_movements.csv")
-.await(function(error, data) {  
+.await(function(error, data) {
   var artists = d3.nest()
     .key(function(d){ return d.DisplayName; })
     .entries(data);
 
   artist_list = []
+  console.log(artists)
   artists.forEach(function(d,i){
     d['LifetimeExhibitionLength'] = d.values[0]['LifetimeExhibitionLength'];
-    d['Movement'] = d.values[0]['Movement'];
+    d['Movement'] = d.values[0]['movement'];
     artist_list[i] = d.values[0]['DisplayName'];
   });
 
@@ -90,6 +91,7 @@ queue()
         return y_scale(d.DisplayName)
       })
       .style('fill', function(d){
+        console.log(d.Movement)
         return color_scale_movement(d.Movement);
       })
       .style('opacity', function(d){
@@ -100,7 +102,7 @@ queue()
           .style('visibility','visible')
           .style('top', d3.event.pageY+10 + 'px')
           .style('left', d3.event.pageX+10 + 'px')
-          .html('<strong>'+d.DisplayName+'</strong><br>'+d.count+' exhibit(s) in ' + d.StartYear + 
+          .html('<strong>'+d.DisplayName+'</strong><br>'+d.count+' exhibit(s) in ' + d.StartYear +
             '<br>' + d.Movement)
           .transition().style('opacity', .9);
       })
@@ -161,7 +163,7 @@ queue()
           .style('visibility', 'visible');
         show_by_days();
     });
-      
+
     d3.select('#years-button')
       .on('click', function(d){
         d3.selectAll('.by-days-chart')
